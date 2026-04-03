@@ -1,1 +1,859 @@
-<head></head><body><p><span>&lt;!DOCTYPE html&gt;</span></p><p>&lt;html lang="en"&gt;</p><p>&lt;head&gt;</p><p>&lt;meta charset="UTF-8"&gt;</p><p>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p><p>&lt;title&gt;Mist AP Client Monitor&lt;/title&gt;</p><p>&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</p><p>&lt;link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=Syne:wght@400;600;700&amp;display=swap" rel="stylesheet"&gt;</p><p>&lt;style&gt;</p><p>&nbsp;&nbsp;:root {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--bg: #0d0f14;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--surface: #141720;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--surface2: #1c2030;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--border: rgba(255,255,255,0.07);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--border2: rgba(255,255,255,0.12);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--text: #e8eaf0;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--muted: #6b7080;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--accent: #4f9cf9;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--accent2: #7c5ef7;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--green: #3ecf8e;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--amber: #f6a623;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--red: #f2453d;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--cyan: #27c1d6;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--font-head: 'Syne', sans-serif;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;--font-mono: 'IBM Plex Mono', monospace;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;* { box-sizing: border-box; margin: 0; padding: 0; }</p><p>&nbsp;&nbsp;body {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: var(--bg);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;color: var(--text);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-family: var(--font-head);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;min-height: 100vh;</p><p>&nbsp;&nbsp;}</p><p><br></p><p>&nbsp;&nbsp;/* ─── HEADER ─────────────────────────────────────────────── */</p><p>&nbsp;&nbsp;header {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;display: flex;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;align-items: center;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;justify-content: space-between;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 20px 32px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-bottom: 1px solid var(--border);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;position: sticky;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;top: 0;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: var(--bg);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;z-index: 100;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.logo {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;display: flex; align-items: center; gap: 10px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.logo-mark {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;width: 32px; height: 32px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: linear-gradient(135deg, var(--accent), var(--accent2));</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-radius: 8px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;display: grid; place-items: center;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-size: 14px; font-weight: 700; color: #fff;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.logo h1 { font-size: 15px; font-weight: 600; letter-spacing: 0.04em; }</p><p>&nbsp;&nbsp;.logo span { color: var(--muted); font-weight: 400; }</p><p>&nbsp;&nbsp;#status-pill {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;display: flex; align-items: center; gap: 7px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-family: var(--font-mono); font-size: 11px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 5px 12px; border-radius: 20px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: var(--surface2); border: 1px solid var(--border);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;color: var(--muted);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;transition: all 0.3s;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;#status-pill.live { color: var(--green); border-color: rgba(62,207,142,0.3); }</p><p>&nbsp;&nbsp;#status-pill.error { color: var(--red); border-color: rgba(242,69,61,0.3); }</p><p>&nbsp;&nbsp;.dot {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;width: 7px; height: 7px; border-radius: 50%;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: currentColor;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.dot.pulse { animation: pulse 2s ease-in-out infinite; }</p><p>&nbsp;&nbsp;@keyframes pulse {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;0%,100% { opacity: 1; transform: scale(1); }</p><p>&nbsp;&nbsp;&nbsp;&nbsp;50% { opacity: 0.5; transform: scale(0.7); }</p><p>&nbsp;&nbsp;}</p><p><br></p><p>&nbsp;&nbsp;/* ─── MAIN ────────────────────────────────────────────────── */</p><p>&nbsp;&nbsp;main { padding: 28px 32px; }</p><p><br></p><p>&nbsp;&nbsp;/* CONFIG PANEL */</p><p>&nbsp;&nbsp;#config-panel {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: var(--surface);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid var(--border2);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-radius: 16px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 28px 32px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;max-width: 560px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;margin: 0 auto;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;#config-panel h2 {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-size: 18px; font-weight: 600; margin-bottom: 6px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;#config-panel p {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-size: 13px; color: var(--muted); margin-bottom: 22px; line-height: 1.6;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.field-group { display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px; }</p><p>&nbsp;&nbsp;.field { display: flex; flex-direction: column; gap: 6px; }</p><p>&nbsp;&nbsp;label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }</p><p>&nbsp;&nbsp;input, select {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: var(--bg); border: 1px solid var(--border2);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;color: var(--text); font-family: var(--font-mono); font-size: 13px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 10px 14px; border-radius: 8px; outline: none;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;transition: border-color 0.2s;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;input:focus, select:focus { border-color: var(--accent); }</p><p>&nbsp;&nbsp;select option { background: var(--surface2); }</p><p>&nbsp;&nbsp;.btn-primary {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: linear-gradient(135deg, var(--accent), var(--accent2));</p><p>&nbsp;&nbsp;&nbsp;&nbsp;color: #fff; border: none; font-family: var(--font-head);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-size: 14px; font-weight: 600; padding: 12px 24px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-radius: 10px; cursor: pointer; width: 100%;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;transition: opacity 0.2s, transform 0.1s;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.btn-primary:hover { opacity: 0.9; }</p><p>&nbsp;&nbsp;.btn-primary:active { transform: scale(0.98); }</p><p>&nbsp;&nbsp;.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }</p><p><br></p><p>&nbsp;&nbsp;/* DASHBOARD */</p><p>&nbsp;&nbsp;#dashboard { display: none; }</p><p><br></p><p>&nbsp;&nbsp;/* STATS ROW */</p><p>&nbsp;&nbsp;.stats-row {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;display: grid;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));</p><p>&nbsp;&nbsp;&nbsp;&nbsp;gap: 14px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;margin-bottom: 28px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.stat-card {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: var(--surface);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid var(--border);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-radius: 12px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 18px 20px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;position: relative; overflow: hidden;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.stat-card::before {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;content: '';</p><p>&nbsp;&nbsp;&nbsp;&nbsp;position: absolute; top: 0; left: 0; right: 0; height: 2px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.stat-card.blue::before { background: var(--accent); }</p><p>&nbsp;&nbsp;.stat-card.purple::before { background: var(--accent2); }</p><p>&nbsp;&nbsp;.stat-card.green::before { background: var(--green); }</p><p>&nbsp;&nbsp;.stat-card.amber::before { background: var(--amber); }</p><p>&nbsp;&nbsp;.stat-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }</p><p>&nbsp;&nbsp;.stat-value { font-size: 28px; font-weight: 700; line-height: 1; font-family: var(--font-mono); }</p><p>&nbsp;&nbsp;.stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; font-family: var(--font-mono); }</p><p><br></p><p>&nbsp;&nbsp;/* CONTROLS */</p><p>&nbsp;&nbsp;.controls {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;display: flex; align-items: center; gap: 12px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;margin-bottom: 20px; flex-wrap: wrap;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.search-wrap {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;flex: 1; min-width: 200px; position: relative;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.search-wrap input {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;width: 100%; padding-left: 34px; font-family: var(--font-mono); font-size: 13px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.search-icon {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;position: absolute; left: 10px; top: 50%; transform: translateY(-50%);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;color: var(--muted); font-size: 14px; pointer-events: none;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.sort-btn {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: var(--surface2); border: 1px solid var(--border);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;color: var(--text); font-family: var(--font-head); font-size: 12px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 9px 14px; border-radius: 8px; cursor: pointer;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;display: flex; align-items: center; gap: 5px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;transition: border-color 0.2s;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;white-space: nowrap;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.sort-btn:hover { border-color: var(--border2); }</p><p>&nbsp;&nbsp;.sort-btn.active { border-color: var(--accent); color: var(--accent); }</p><p>&nbsp;&nbsp;.refresh-btn {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: var(--surface2); border: 1px solid var(--border);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;color: var(--muted); font-family: var(--font-mono); font-size: 12px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 9px 14px; border-radius: 8px; cursor: pointer;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;transition: all 0.2s;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;white-space: nowrap;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.refresh-btn:hover { color: var(--text); border-color: var(--border2); }</p><p><br></p><p>&nbsp;&nbsp;/* AP TABLE */</p><p>&nbsp;&nbsp;.table-wrap {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: var(--surface);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid var(--border);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-radius: 16px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;overflow: hidden;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;table { width: 100%; border-collapse: collapse; }</p><p>&nbsp;&nbsp;thead th {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-size: 10px; font-weight: 600; letter-spacing: 0.1em;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;text-transform: uppercase; color: var(--muted);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 14px 18px; text-align: left;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-bottom: 1px solid var(--border);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: var(--surface2);</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;tbody tr {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-bottom: 1px solid var(--border);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;transition: background 0.15s;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;cursor: default;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;tbody tr:last-child { border-bottom: none; }</p><p>&nbsp;&nbsp;tbody tr:hover { background: var(--surface2); }</p><p>&nbsp;&nbsp;tbody td {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 13px 18px; font-size: 13px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;vertical-align: middle;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.ap-name { font-weight: 600; font-size: 13px; }</p><p>&nbsp;&nbsp;.ap-mac { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }</p><p>&nbsp;&nbsp;.badge {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;display: inline-flex; align-items: center; gap: 5px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 3px 10px; border-radius: 20px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-family: var(--font-mono); font-size: 11px; font-weight: 500;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.badge.connected { background: rgba(62,207,142,0.12); color: var(--green); }</p><p>&nbsp;&nbsp;.badge.disconnected { background: rgba(242,69,61,0.12); color: var(--red); }</p><p>&nbsp;&nbsp;.badge.dot { width: 6px; height: 6px; border-radius: 50%; padding: 0; }</p><p>&nbsp;&nbsp;.client-count {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-family: var(--font-mono); font-size: 15px; font-weight: 500;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;min-width: 24px; display: inline-block; text-align: right;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.client-bar-wrap {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;display: flex; align-items: center; gap: 10px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.bar-track {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;flex: 1; height: 5px; background: var(--bg);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-radius: 99px; overflow: hidden; min-width: 60px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.bar-fill {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;height: 100%; border-radius: 99px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: linear-gradient(90deg, var(--accent), var(--cyan));</p><p>&nbsp;&nbsp;&nbsp;&nbsp;transition: width 0.6s ease;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.site-pill {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-size: 11px; font-family: var(--font-mono);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;color: var(--muted); background: var(--surface2);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid var(--border); border-radius: 6px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 2px 8px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.model-text { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }</p><p>&nbsp;&nbsp;.ip-text { font-size: 11px; font-family: var(--font-mono); color: var(--muted); }</p><p><br></p><p>&nbsp;&nbsp;/* EMPTY / ERROR / LOADING states */</p><p>&nbsp;&nbsp;.state-block {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 60px 24px; text-align: center; color: var(--muted);</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.state-block .icon { font-size: 32px; margin-bottom: 12px; }</p><p>&nbsp;&nbsp;.state-block h3 { font-size: 15px; color: var(--text); margin-bottom: 6px; }</p><p>&nbsp;&nbsp;.state-block p { font-size: 13px; line-height: 1.6; max-width: 360px; margin: 0 auto; }</p><p>&nbsp;&nbsp;.spinner {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;width: 28px; height: 28px; border: 2px solid var(--border2);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-top-color: var(--accent); border-radius: 50%;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;animation: spin 0.7s linear infinite; margin: 0 auto 14px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;@keyframes spin { to { transform: rotate(360deg); } }</p><p><br></p><p>&nbsp;&nbsp;/* FOOTER */</p><p>&nbsp;&nbsp;.footer-bar {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;display: flex; align-items: center; justify-content: space-between;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;margin-top: 18px; font-family: var(--font-mono); font-size: 11px; color: var(--muted);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;flex-wrap: wrap; gap: 8px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;#back-btn {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: none; border: 1px solid var(--border);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;color: var(--muted); font-family: var(--font-mono); font-size: 11px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 5px 12px; border-radius: 6px; cursor: pointer;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;transition: all 0.2s;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;#back-btn:hover { color: var(--text); border-color: var(--border2); }</p><p><br></p><p>&nbsp;&nbsp;/* responsive */</p><p>&nbsp;&nbsp;@media (max-width: 720px) {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;main { padding: 20px 16px; }</p><p>&nbsp;&nbsp;&nbsp;&nbsp;header { padding: 16px; }</p><p>&nbsp;&nbsp;&nbsp;&nbsp;.hide-mobile { display: none; }</p><p>&nbsp;&nbsp;&nbsp;&nbsp;.stats-row { grid-template-columns: repeat(2,1fr); }</p><p>&nbsp;&nbsp;}</p><p><br></p><p>&nbsp;&nbsp;/* ─── LOGIN OVERLAY ──────────────────────────────────────── */</p><p>&nbsp;&nbsp;#login-overlay {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;position: fixed; inset: 0; z-index: 999;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: var(--bg);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;display: flex; flex-direction: column;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;align-items: center; justify-content: center;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 24px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;animation: fadeIn 0.4s ease;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }</p><p>&nbsp;&nbsp;#login-overlay.out {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;animation: fadeOut 0.35s ease forwards;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;@keyframes fadeOut { to { opacity: 0; transform: translateY(-8px); } }</p><p><br></p><p>&nbsp;&nbsp;.login-card {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: var(--surface);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border: 1px solid var(--border2);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-radius: 20px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 36px 40px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;width: 100%; max-width: 400px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.login-logo {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;display: flex; align-items: center; gap: 10px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;margin-bottom: 28px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.login-logo-mark {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;width: 38px; height: 38px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: linear-gradient(135deg, var(--accent), var(--accent2));</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-radius: 10px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;display: grid; place-items: center;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-size: 16px; font-weight: 700; color: #fff;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;flex-shrink: 0;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.login-logo-text h2 { font-size: 17px; font-weight: 600; line-height: 1.2; }</p><p>&nbsp;&nbsp;.login-logo-text p { font-size: 12px; color: var(--muted); margin-top: 2px; }</p><p><br></p><p>&nbsp;&nbsp;.login-divider {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;height: 1px; background: var(--border);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;margin-bottom: 24px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.login-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }</p><p>&nbsp;&nbsp;.login-field label {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-size: 11px; font-weight: 600; letter-spacing: 0.08em;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;color: var(--muted); text-transform: uppercase;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.input-wrap { position: relative; }</p><p>&nbsp;&nbsp;.input-wrap input {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;width: 100%;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: var(--bg); border: 1px solid var(--border2);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;color: var(--text); font-family: var(--font-mono); font-size: 13px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 11px 14px; border-radius: 9px; outline: none;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;transition: border-color 0.2s, box-shadow 0.2s;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.input-wrap input:focus {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-color: var(--accent);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;box-shadow: 0 0 0 3px rgba(79,156,249,0.12);</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.input-wrap input.shake {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;animation: shake 0.4s ease;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-color: var(--red);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;box-shadow: 0 0 0 3px rgba(242,69,61,0.12);</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;@keyframes shake {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;0%,100% { transform: translateX(0); }</p><p>&nbsp;&nbsp;&nbsp;&nbsp;20% { transform: translateX(-6px); }</p><p>&nbsp;&nbsp;&nbsp;&nbsp;40% { transform: translateX(6px); }</p><p>&nbsp;&nbsp;&nbsp;&nbsp;60% { transform: translateX(-4px); }</p><p>&nbsp;&nbsp;&nbsp;&nbsp;80% { transform: translateX(4px); }</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.toggle-pw {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;position: absolute; right: 11px; top: 50%; transform: translateY(-50%);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: none; border: none; cursor: pointer;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;color: var(--muted); font-size: 13px; padding: 2px 4px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;transition: color 0.2s;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.toggle-pw:hover { color: var(--text); }</p><p><br></p><p>&nbsp;&nbsp;#login-error {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-size: 12px; color: var(--red);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-family: var(--font-mono); margin-bottom: 14px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;min-height: 18px; transition: opacity 0.2s;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.login-btn {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: linear-gradient(135deg, var(--accent), var(--accent2));</p><p>&nbsp;&nbsp;&nbsp;&nbsp;color: #fff; border: none; font-family: var(--font-head);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-size: 14px; font-weight: 600; padding: 13px 24px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;border-radius: 10px; cursor: pointer; width: 100%;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;transition: opacity 0.2s, transform 0.1s;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;margin-top: 4px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.login-btn:hover { opacity: 0.9; }</p><p>&nbsp;&nbsp;.login-btn:active { transform: scale(0.98); }</p><p>&nbsp;&nbsp;.login-hint {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;text-align: center; margin-top: 18px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;font-size: 11px; font-family: var(--font-mono); color: var(--muted);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;line-height: 1.6;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.logout-btn {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;background: none; border: 1px solid var(--border);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;color: var(--muted); font-family: var(--font-mono); font-size: 11px;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;padding: 5px 12px; border-radius: 6px; cursor: pointer;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;transition: all 0.2s; margin-left: 8px;</p><p>&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;.logout-btn:hover { color: var(--red); border-color: rgba(242,69,61,0.4); }</p><p>&lt;/style&gt;</p><p>&lt;/head&gt;</p><p>&lt;body&gt;</p><p><br></p><p>&lt;!-- ── LOGIN OVERLAY ─────────────────────────────────────────── --&gt;</p><p>&lt;div id="login-overlay"&gt;</p><p>&nbsp;&nbsp;&lt;div class="login-card"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="login-logo"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="login-logo-mark"&gt;M&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="login-logo-text"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;Mist AP Monitor&lt;/h2&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;Sign in to continue&lt;/p&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="login-divider"&gt;&lt;/div&gt;</p><p><br></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="login-field"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&gt;Username&lt;/label&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="input-wrap"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" id="login-user" placeholder="Enter username" autocomplete="username"</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="login-field"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&gt;Password&lt;/label&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="input-wrap"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password"</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onkeydown="if(event.key==='Enter')doLogin()"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button class="toggle-pw" type="button" onclick="togglePw(this)" title="Show/hide password"&gt;👁&lt;/button&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p><br></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;div id="login-error"&gt;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;button class="login-btn" onclick="doLogin()"&gt;Sign In&lt;/button&gt;</p><p><br></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="login-hint"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default: &lt;strong style="color:var(--text)"&gt;admin&lt;/strong&gt; / &lt;strong style="color:var(--text)"&gt;mist2024&lt;/strong&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;—&nbsp;edit the &lt;code style="color:var(--accent)"&gt;USERS&lt;/code&gt; object in the script to change.</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&lt;/div&gt;</p><p>&lt;/div&gt;</p><p><br></p><p>&lt;header&gt;</p><p>&nbsp;&nbsp;&lt;div class="logo"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="logo-mark"&gt;M&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;Mist &lt;span&gt;AP Monitor&lt;/span&gt;&lt;/h1&gt;</p><p>&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&lt;div style="display:flex;align-items:center;gap:8px"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;div id="status-pill"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span class="dot"&gt;&lt;/span&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span id="status-text"&gt;Not connected&lt;/span&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;button class="logout-btn" id="logout-btn" style="display:none" onclick="doLogout()"&gt;Sign out&lt;/button&gt;</p><p>&nbsp;&nbsp;&lt;/div&gt;</p><p>&lt;/header&gt;</p><p><br></p><p>&lt;main&gt;</p><p>&nbsp;&nbsp;&lt;!-- ── CONFIGURATION ─────────────────────────────────────── --&gt;</p><p>&nbsp;&nbsp;&lt;div id="config-panel"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;Connect to your tenant&lt;/h2&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;Enter your Juniper Mist API credentials. Your token is used only in-browser and never stored or transmitted anywhere except directly to the Mist API.&lt;/p&gt;</p><p><br></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="field-group"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="field"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&gt;API Token&lt;/label&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="password" id="api-token" placeholder="Paste your Mist API token…" autocomplete="off"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="field"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&gt;Cloud Region&lt;/label&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;select id="cloud-region"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;option value="https://api.mist.com"&gt;Global (api.mist.com)&lt;/option&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;option value="https://api.eu.mist.com"&gt;Europe (api.eu.mist.com)&lt;/option&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;option value="https://api.gc1.mist.com"&gt;GovCloud (api.gc1.mist.com)&lt;/option&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;option value="https://api.ac2.mist.com"&gt;APAC (api.ac2.mist.com)&lt;/option&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/select&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="field"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label&gt;Org ID &lt;span style="text-transform:none;font-weight:400;color:var(--muted)"&gt; — leave blank to auto-detect&lt;/span&gt;&lt;/label&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" id="org-id" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" autocomplete="off"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p><br></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;button class="btn-primary" id="connect-btn" onclick="connect()"&gt;Connect &amp; Load APs&lt;/button&gt;</p><p><br></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;div id="conn-error" style="display:none;margin-top:14px;font-size:12px;color:var(--red);font-family:var(--font-mono);line-height:1.6;"&gt;&lt;/div&gt;</p><p>&nbsp;&nbsp;&lt;/div&gt;</p><p><br></p><p>&nbsp;&nbsp;&lt;!-- ── DASHBOARD ─────────────────────────────────────────── --&gt;</p><p>&nbsp;&nbsp;&lt;div id="dashboard"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stats-row"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-card blue"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-label"&gt;Total APs&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-value" id="stat-total"&gt;—&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-sub" id="stat-org"&gt;—&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-card green"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-label"&gt;Connected APs&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-value" id="stat-connected"&gt;—&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-sub" id="stat-connected-pct"&gt;—&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-card amber"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-label"&gt;Total Clients&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-value" id="stat-clients"&gt;—&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-sub"&gt;across all APs&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-card purple"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-label"&gt;Busiest AP&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-value" id="stat-busiest-count"&gt;—&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="stat-sub" id="stat-busiest-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px"&gt;—&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p><br></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="controls"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="search-wrap"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span class="search-icon"&gt;⌕&lt;/span&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" id="search-input" placeholder="Filter APs by name, site, MAC…" oninput="applyFilters()"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button class="sort-btn active" id="sort-clients" onclick="setSort('clients')"&gt;▼ Clients&lt;/button&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button class="sort-btn" id="sort-name" onclick="setSort('name')"&gt;Name A-Z&lt;/button&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button class="sort-btn" id="sort-status" onclick="setSort('status')"&gt;Status&lt;/button&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button class="refresh-btn" onclick="refreshData()"&gt;↻ Refresh&lt;/button&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p><br></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="table-wrap"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;table&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;thead&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;Access Point&lt;/th&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th class="hide-mobile"&gt;Site&lt;/th&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th class="hide-mobile"&gt;Model&lt;/th&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;Status&lt;/th&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;Clients&lt;/th&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th class="hide-mobile"&gt;IP Address&lt;/th&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/thead&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tbody id="ap-tbody"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr&gt;&lt;td colspan="6"&gt;&lt;div class="state-block"&gt;&lt;div class="spinner"&gt;&lt;/div&gt;&lt;h3&gt;Loading…&lt;/h3&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tbody&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/table&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p><br></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="footer-bar"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button id="back-btn" onclick="goBack()"&gt;← Change credentials&lt;/button&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span id="last-updated"&gt;—&lt;/span&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&lt;/div&gt;</p><p>&lt;/main&gt;</p><p><br></p><p>&lt;script&gt;</p><p>// ── STATE ──────────────────────────────────────────────────────</p><p>let state = {</p><p>&nbsp;&nbsp;token: '', baseUrl: '', orgId: '',</p><p>&nbsp;&nbsp;aps: [], sites: {},</p><p>&nbsp;&nbsp;sort: 'clients', filter: '',</p><p>};</p><p><br></p><p>// ── CONNECT ────────────────────────────────────────────────────</p><p>async function connect() {</p><p>&nbsp;&nbsp;const token = document.getElementById('api-token').value.trim();</p><p>&nbsp;&nbsp;const baseUrl = document.getElementById('cloud-region').value;</p><p>&nbsp;&nbsp;const orgIdInput = document.getElementById('org-id').value.trim();</p><p>&nbsp;&nbsp;const errEl = document.getElementById('conn-error');</p><p>&nbsp;&nbsp;const btn = document.getElementById('connect-btn');</p><p><br></p><p>&nbsp;&nbsp;errEl.style.display = 'none';</p><p>&nbsp;&nbsp;if (!token) { showError('API token is required.'); return; }</p><p><br></p><p>&nbsp;&nbsp;btn.disabled = true; btn.textContent = 'Connecting…';</p><p>&nbsp;&nbsp;state.token = token; state.baseUrl = baseUrl;</p><p><br></p><p>&nbsp;&nbsp;try {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;// Auto-detect org if not provided</p><p>&nbsp;&nbsp;&nbsp;&nbsp;let orgId = orgIdInput;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;if (!orgId) {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const selfResp = await mistFetch('/api/v1/self');</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (!selfResp.ok) throw new Error(`Auth failed (${selfResp.status}). Check your API token.`);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const self = await selfResp.json();</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const orgs = Object.keys(self.privileges?.reduce((a, p) =&gt; {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (p.org_id) a[p.org_id] = true; return a;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, {}) || {});</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (!orgs.length) throw new Error('No organizations found for this token.');</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;orgId = orgs[0];</p><p>&nbsp;&nbsp;&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;&nbsp;&nbsp;state.orgId = orgId;</p><p><br></p><p>&nbsp;&nbsp;&nbsp;&nbsp;// Load sites for lookup</p><p>&nbsp;&nbsp;&nbsp;&nbsp;const sitesResp = await mistFetch(`/api/v1/orgs/${orgId}/sites`);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;if (sitesResp.ok) {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const sites = await sitesResp.json();</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;state.sites = sites.reduce((a, s) =&gt; { a[s.id] = s.name; return a; }, {});</p><p>&nbsp;&nbsp;&nbsp;&nbsp;}</p><p><br></p><p>&nbsp;&nbsp;&nbsp;&nbsp;await loadAPs();</p><p>&nbsp;&nbsp;&nbsp;&nbsp;showDashboard();</p><p>&nbsp;&nbsp;} catch (e) {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;showError(e.message || 'Connection failed. Check credentials and try again.');</p><p>&nbsp;&nbsp;&nbsp;&nbsp;btn.disabled = false; btn.textContent = 'Connect &amp; Load APs';</p><p>&nbsp;&nbsp;}</p><p>}</p><p><br></p><p>async function loadAPs() {</p><p>&nbsp;&nbsp;const { orgId } = state;</p><p><br></p><p>&nbsp;&nbsp;// Fetch devices (APs) — paginate if needed</p><p>&nbsp;&nbsp;let allAPs = [];</p><p>&nbsp;&nbsp;let page = 1;</p><p>&nbsp;&nbsp;while (true) {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;const resp = await mistFetch(`/api/v1/orgs/${orgId}/devices/search?type=ap&amp;limit=200&amp;page=${page}`);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;if (!resp.ok) throw new Error(`Failed to load APs (${resp.status}).`);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;const data = await resp.json();</p><p>&nbsp;&nbsp;&nbsp;&nbsp;const results = data.results || [];</p><p>&nbsp;&nbsp;&nbsp;&nbsp;allAPs = allAPs.concat(results);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;if (results.length &lt; 200) break;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;page++;</p><p>&nbsp;&nbsp;}</p><p><br></p><p>&nbsp;&nbsp;// Fetch client counts for all sites</p><p>&nbsp;&nbsp;const clientMap = {};</p><p>&nbsp;&nbsp;try {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;const statsResp = await mistFetch(`/api/v1/orgs/${orgId}/stats/devices?type=ap&amp;limit=1000`);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;if (statsResp.ok) {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const statsData = await statsResp.json();</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const stats = statsData.results || statsData || [];</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stats.forEach(s =&gt; {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (s.mac) clientMap[s.mac] = s.num_clients || 0;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</p><p>&nbsp;&nbsp;&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;} catch (_) {}</p><p><br></p><p>&nbsp;&nbsp;state.aps = allAPs.map(ap =&gt; ({</p><p>&nbsp;&nbsp;&nbsp;&nbsp;id: ap.id || ap.device_id,</p><p>&nbsp;&nbsp;&nbsp;&nbsp;name: ap.name || ap.hostname || ap.mac,</p><p>&nbsp;&nbsp;&nbsp;&nbsp;mac: ap.mac,</p><p>&nbsp;&nbsp;&nbsp;&nbsp;model: ap.model || '—',</p><p>&nbsp;&nbsp;&nbsp;&nbsp;site_id: ap.site_id,</p><p>&nbsp;&nbsp;&nbsp;&nbsp;site_name: state.sites[ap.site_id] || ap.site_id || '—',</p><p>&nbsp;&nbsp;&nbsp;&nbsp;status: ap.status === 'connected' ? 'connected' : 'disconnected',</p><p>&nbsp;&nbsp;&nbsp;&nbsp;ip: ap.ip_address || ap.ip || '—',</p><p>&nbsp;&nbsp;&nbsp;&nbsp;clients: clientMap[ap.mac] || ap.num_clients || 0,</p><p>&nbsp;&nbsp;}));</p><p><br></p><p>&nbsp;&nbsp;updateStats();</p><p>&nbsp;&nbsp;renderTable();</p><p>&nbsp;&nbsp;setStatus('live', `Live · ${new Date().toLocaleTimeString()}`);</p><p>&nbsp;&nbsp;document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;</p><p>}</p><p><br></p><p>// ── API HELPER ─────────────────────────────────────────────────</p><p>function mistFetch(path) {</p><p>&nbsp;&nbsp;return fetch(state.baseUrl + path, {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;headers: { Authorization: `Token ${state.token}`, 'Content-Type': 'application/json' }</p><p>&nbsp;&nbsp;});</p><p>}</p><p><br></p><p>// ── STATS ──────────────────────────────────────────────────────</p><p>function updateStats() {</p><p>&nbsp;&nbsp;const { aps, orgId } = state;</p><p>&nbsp;&nbsp;const connected = aps.filter(a =&gt; a.status === 'connected');</p><p>&nbsp;&nbsp;const totalClients = aps.reduce((s, a) =&gt; s + a.clients, 0);</p><p>&nbsp;&nbsp;const busiest = [...aps].sort((a,b) =&gt; b.clients - a.clients)[0];</p><p><br></p><p>&nbsp;&nbsp;document.getElementById('stat-total').textContent = aps.length;</p><p>&nbsp;&nbsp;document.getElementById('stat-org').textContent = orgId.slice(0,8) + '…';</p><p>&nbsp;&nbsp;document.getElementById('stat-connected').textContent = connected.length;</p><p>&nbsp;&nbsp;document.getElementById('stat-connected-pct').textContent =</p><p>&nbsp;&nbsp;&nbsp;&nbsp;aps.length ? Math.round(connected.length / aps.length * 100) + '% online' : '—';</p><p>&nbsp;&nbsp;document.getElementById('stat-clients').textContent = totalClients;</p><p>&nbsp;&nbsp;if (busiest) {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('stat-busiest-count').textContent = busiest.clients;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('stat-busiest-name').textContent = busiest.name;</p><p>&nbsp;&nbsp;}</p><p>}</p><p><br></p><p>// ── RENDER TABLE ───────────────────────────────────────────────</p><p>function renderTable() {</p><p>&nbsp;&nbsp;const { aps, sort, filter } = state;</p><p>&nbsp;&nbsp;const tbody = document.getElementById('ap-tbody');</p><p><br></p><p>&nbsp;&nbsp;let list = [...aps];</p><p><br></p><p>&nbsp;&nbsp;// filter</p><p>&nbsp;&nbsp;if (filter) {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;const q = filter.toLowerCase();</p><p>&nbsp;&nbsp;&nbsp;&nbsp;list = list.filter(a =&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a.name.toLowerCase().includes(q) ||</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a.mac.toLowerCase().includes(q) ||</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a.site_name.toLowerCase().includes(q) ||</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a.model.toLowerCase().includes(q)</p><p>&nbsp;&nbsp;&nbsp;&nbsp;);</p><p>&nbsp;&nbsp;}</p><p><br></p><p>&nbsp;&nbsp;// sort</p><p>&nbsp;&nbsp;if (sort === 'clients') list.sort((a,b) =&gt; b.clients - a.clients);</p><p>&nbsp;&nbsp;else if (sort === 'name') list.sort((a,b) =&gt; a.name.localeCompare(b.name));</p><p>&nbsp;&nbsp;else if (sort === 'status') list.sort((a,b) =&gt; (a.status === 'connected' ? -1 : 1));</p><p><br></p><p>&nbsp;&nbsp;if (!list.length) {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;tbody.innerHTML = `&lt;tr&gt;&lt;td colspan="6"&gt;&lt;div class="state-block"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="icon"&gt;⊘&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h3&gt;No APs found&lt;/h3&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;${filter ? 'No results match your filter.' : 'No access points returned from the API.'}&lt;/p&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;`;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;return;</p><p>&nbsp;&nbsp;}</p><p><br></p><p>&nbsp;&nbsp;const maxClients = Math.max(...list.map(a =&gt; a.clients), 1);</p><p><br></p><p>&nbsp;&nbsp;tbody.innerHTML = list.map(ap =&gt; {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;const pct = Math.round((ap.clients / maxClients) * 100);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;const clientColor = ap.clients === 0 ? 'var(--muted)' :</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ap.clients &lt; 10 ? 'var(--accent)' :</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ap.clients &lt; 25 ? 'var(--amber)' : 'var(--red)';</p><p>&nbsp;&nbsp;&nbsp;&nbsp;return `</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="ap-name"&gt;${esc(ap.name)}&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="ap-mac"&gt;${esc(ap.mac)}&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/td&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td class="hide-mobile"&gt;&lt;span class="site-pill"&gt;${esc(ap.site_name)}&lt;/span&gt;&lt;/td&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td class="hide-mobile"&gt;&lt;span class="model-text"&gt;${esc(ap.model)}&lt;/span&gt;&lt;/td&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span class="badge ${ap.status}"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span class="dot" style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block"&gt;&lt;/span&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${ap.status}</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/span&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/td&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="client-bar-wrap"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span class="client-count" style="color:${clientColor}"&gt;${ap.clients}&lt;/span&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="bar-track"&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="bar-fill" style="width:${pct}%"&gt;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/td&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td class="hide-mobile"&gt;&lt;span class="ip-text"&gt;${esc(ap.ip)}&lt;/span&gt;&lt;/td&gt;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;`;</p><p>&nbsp;&nbsp;}).join('');</p><p>}</p><p><br></p><p>// ── CONTROLS ───────────────────────────────────────────────────</p><p>function setSort(key) {</p><p>&nbsp;&nbsp;state.sort = key;</p><p>&nbsp;&nbsp;document.querySelectorAll('.sort-btn').forEach(b =&gt; b.classList.remove('active'));</p><p>&nbsp;&nbsp;document.getElementById(`sort-${key}`).classList.add('active');</p><p>&nbsp;&nbsp;renderTable();</p><p>}</p><p><br></p><p>function applyFilters() {</p><p>&nbsp;&nbsp;state.filter = document.getElementById('search-input').value;</p><p>&nbsp;&nbsp;renderTable();</p><p>}</p><p><br></p><p>async function refreshData() {</p><p>&nbsp;&nbsp;setStatus('live', 'Refreshing…');</p><p>&nbsp;&nbsp;try { await loadAPs(); }</p><p>&nbsp;&nbsp;catch (e) { setStatus('error', 'Refresh failed'); }</p><p>}</p><p><br></p><p>// ── UI HELPERS ─────────────────────────────────────────────────</p><p>function showDashboard() {</p><p>&nbsp;&nbsp;document.getElementById('config-panel').style.display = 'none';</p><p>&nbsp;&nbsp;document.getElementById('dashboard').style.display = 'block';</p><p>}</p><p><br></p><p>function goBack() {</p><p>&nbsp;&nbsp;document.getElementById('dashboard').style.display = 'none';</p><p>&nbsp;&nbsp;document.getElementById('config-panel').style.display = 'block';</p><p>&nbsp;&nbsp;document.getElementById('connect-btn').disabled = false;</p><p>&nbsp;&nbsp;document.getElementById('connect-btn').textContent = 'Connect &amp; Load APs';</p><p>&nbsp;&nbsp;setStatus('', 'Not connected');</p><p>}</p><p><br></p><p>function showError(msg) {</p><p>&nbsp;&nbsp;const el = document.getElementById('conn-error');</p><p>&nbsp;&nbsp;el.textContent = '⚠ ' + msg;</p><p>&nbsp;&nbsp;el.style.display = 'block';</p><p>}</p><p><br></p><p>function setStatus(type, text) {</p><p>&nbsp;&nbsp;const pill = document.getElementById('status-pill');</p><p>&nbsp;&nbsp;const dot = pill.querySelector('.dot');</p><p>&nbsp;&nbsp;pill.className = 'status-pill ' + type;</p><p>&nbsp;&nbsp;document.getElementById('status-text').textContent = text;</p><p>&nbsp;&nbsp;dot.className = 'dot' + (type === 'live' ? ' pulse' : '');</p><p>}</p><p><br></p><p>function esc(s) {</p><p>&nbsp;&nbsp;return String(s).replace(/&amp;/g,'&amp;').replace(/&lt;/g,'&lt;').replace(/&gt;/g,'&gt;');</p><p>}</p><p><br></p><p>// ── LOGIN ──────────────────────────────────────────────────────</p><p>// To add/change users: edit the USERS object below.</p><p>// Keys are usernames, values are SHA-256 hashes of passwords.</p><p>// Generate a hash at: <a classname="e-rte-anchor" href="https://emn178.github.io/online-tools/sha256.html" title="https://emn178.github.io/online-tools/sha256.html" target="_blank">https://emn178.github.io/online-tools/sha256.html </a></p><p>// Default: admin / mist2024</p><p>const USERS = {</p><p>&nbsp;&nbsp;"admin": "b1c978caec9c6cc91dfdf66e94887cb63e24d74a898cd44413a76ee35945e4f",</p><p>&nbsp;&nbsp;// "viewer": "your-sha256-hash-here",</p><p>};</p><p><br></p><p>async function sha256(str) {</p><p>&nbsp;&nbsp;const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));</p><p>&nbsp;&nbsp;return Array.from(new Uint8Array(buf)).map(b =&gt; b.toString(16).padStart(2,'0')).join('');</p><p>}</p><p><br></p><p>async function doLogin() {</p><p>&nbsp;&nbsp;const user = document.getElementById('login-user').value.trim();</p><p>&nbsp;&nbsp;const pass = document.getElementById('login-pass').value;</p><p>&nbsp;&nbsp;const errEl = document.getElementById('login-error');</p><p>&nbsp;&nbsp;errEl.textContent = '';</p><p><br></p><p>&nbsp;&nbsp;if (!user || !pass) {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;setLoginError('Please enter both username and password.');</p><p>&nbsp;&nbsp;&nbsp;&nbsp;return;</p><p>&nbsp;&nbsp;}</p><p><br></p><p>&nbsp;&nbsp;const hash = await sha256(pass);</p><p>&nbsp;&nbsp;if (USERS[user] &amp;&amp; USERS[user] === hash) {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;sessionStorage.setItem('mist_auth', '1');</p><p>&nbsp;&nbsp;&nbsp;&nbsp;const overlay = document.getElementById('login-overlay');</p><p>&nbsp;&nbsp;&nbsp;&nbsp;overlay.classList.add('out');</p><p>&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(() =&gt; { overlay.style.display = 'none'; }, 350);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('logout-btn').style.display = 'inline-block';</p><p>&nbsp;&nbsp;} else {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;setLoginError('Invalid username or password.');</p><p>&nbsp;&nbsp;&nbsp;&nbsp;['login-user','login-pass'].forEach(id =&gt; {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const el = document.getElementById(id);</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;el.classList.add('shake');</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;el.addEventListener('animationend', () =&gt; el.classList.remove('shake'), { once: true });</p><p>&nbsp;&nbsp;&nbsp;&nbsp;});</p><p>&nbsp;&nbsp;}</p><p>}</p><p><br></p><p>function doLogout() {</p><p>&nbsp;&nbsp;sessionStorage.removeItem('mist_auth');</p><p>&nbsp;&nbsp;// Reset app state</p><p>&nbsp;&nbsp;state = { token: '', baseUrl: '', orgId: '', aps: [], sites: {}, sort: 'clients', filter: '' };</p><p>&nbsp;&nbsp;document.getElementById('dashboard').style.display = 'none';</p><p>&nbsp;&nbsp;document.getElementById('config-panel').style.display = 'block';</p><p>&nbsp;&nbsp;document.getElementById('connect-btn').disabled = false;</p><p>&nbsp;&nbsp;document.getElementById('connect-btn').textContent = 'Connect &amp; Load APs';</p><p>&nbsp;&nbsp;document.getElementById('logout-btn').style.display = 'none';</p><p>&nbsp;&nbsp;setStatus('', 'Not connected');</p><p>&nbsp;&nbsp;// Show login</p><p>&nbsp;&nbsp;const overlay = document.getElementById('login-overlay');</p><p>&nbsp;&nbsp;overlay.style.display = 'flex';</p><p>&nbsp;&nbsp;overlay.classList.remove('out');</p><p>&nbsp;&nbsp;document.getElementById('login-user').value = '';</p><p>&nbsp;&nbsp;document.getElementById('login-pass').value = '';</p><p>&nbsp;&nbsp;document.getElementById('login-error').textContent = '';</p><p>}</p><p><br></p><p>function setLoginError(msg) {</p><p>&nbsp;&nbsp;document.getElementById('login-error').textContent = '⚠ ' + msg;</p><p>}</p><p><br></p><p>function togglePw(btn) {</p><p>&nbsp;&nbsp;const inp = btn.previousElementSibling;</p><p>&nbsp;&nbsp;inp.type = inp.type === 'password' ? 'text' : 'password';</p><p>}</p><p><br></p><p>// Auto-hide overlay if already authenticated in this session</p><p>if (sessionStorage.getItem('mist_auth') === '1') {</p><p>&nbsp;&nbsp;document.getElementById('login-overlay').style.display = 'none';</p><p>&nbsp;&nbsp;document.getElementById('logout-btn').style.display = 'inline-block';</p><p>}</p><p>// Focus username field on load</p><p>window.addEventListener('load', () =&gt; {</p><p>&nbsp;&nbsp;const overlay = document.getElementById('login-overlay');</p><p>&nbsp;&nbsp;if (overlay.style.display !== 'none') {</p><p>&nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('login-user').focus();</p><p>&nbsp;&nbsp;}</p><p>});</p><p>&lt;/script&gt;</p><p>&lt;/body&gt;</p><p>&lt;/html&gt;</p></body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mist AP Client Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #141720;
+    --surface2: #1c2030;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8eaf0;
+    --muted: #6b7080;
+    --accent: #4f9cf9;
+    --accent2: #7c5ef7;
+    --green: #3ecf8e;
+    --amber: #f6a623;
+    --red: #f2453d;
+    --cyan: #27c1d6;
+    --font-head: 'Syne', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-head);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─────────────────────────────────────────────── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-mark {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-size: 14px; font-weight: 700; color: #fff;
+  }
+  .logo h1 { font-size: 15px; font-weight: 600; letter-spacing: 0.04em; }
+  .logo span { color: var(--muted); font-weight: 400; }
+  #status-pill {
+    display: flex; align-items: center; gap: 7px;
+    font-family: var(--font-mono); font-size: 11px;
+    padding: 5px 12px; border-radius: 20px;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--muted);
+    transition: all 0.3s;
+  }
+  #status-pill.live { color: var(--green); border-color: rgba(62,207,142,0.3); }
+  #status-pill.error { color: var(--red); border-color: rgba(242,69,61,0.3); }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: currentColor;
+  }
+  .dot.pulse { animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  /* ─── MAIN ────────────────────────────────────────────────── */
+  main { padding: 28px 32px; }
+
+  /* CONFIG PANEL */
+  #config-panel {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    padding: 28px 32px;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  #config-panel h2 {
+    font-size: 18px; font-weight: 600; margin-bottom: 6px;
+  }
+  #config-panel p {
+    font-size: 13px; color: var(--muted); margin-bottom: 22px; line-height: 1.6;
+  }
+  .field-group { display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }
+  input, select {
+    background: var(--bg); border: 1px solid var(--border2);
+    color: var(--text); font-family: var(--font-mono); font-size: 13px;
+    padding: 10px 14px; border-radius: 8px; outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus, select:focus { border-color: var(--accent); }
+  select option { background: var(--surface2); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff; border: none; font-family: var(--font-head);
+    font-size: 14px; font-weight: 600; padding: 12px 24px;
+    border-radius: 10px; cursor: pointer; width: 100%;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* DASHBOARD */
+  #dashboard { display: none; }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  }
+  .stat-card.blue::before { background: var(--accent); }
+  .stat-card.purple::before { background: var(--accent2); }
+  .stat-card.green::before { background: var(--green); }
+  .stat-card.amber::before { background: var(--amber); }
+  .stat-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+  .stat-value { font-size: 28px; font-weight: 700; line-height: 1; font-family: var(--font-mono); }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; font-family: var(--font-mono); }
+
+  /* CONTROLS */
+  .controls {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .search-wrap {
+    flex: 1; min-width: 200px; position: relative;
+  }
+  .search-wrap input {
+    width: 100%; padding-left: 34px; font-family: var(--font-mono); font-size: 13px;
+  }
+  .search-icon {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); font-size: 14px; pointer-events: none;
+  }
+  .sort-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-family: var(--font-head); font-size: 12px;
+    padding: 9px 14px; border-radius: 8px; cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+    transition: border-color 0.2s;
+    white-space: nowrap;
+  }
+  .sort-btn:hover { border-color: var(--border2); }
+  .sort-btn.active { border-color: var(--accent); color: var(--accent); }
+  .refresh-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--muted); font-family: var(--font-mono); font-size: 12px;
+    padding: 9px 14px; border-radius: 8px; cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .refresh-btn:hover { color: var(--text); border-color: var(--border2); }
+
+  /* AP TABLE */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+    padding: 14px 18px; text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    cursor: default;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+  tbody td {
+    padding: 13px 18px; font-size: 13px;
+    vertical-align: middle;
+  }
+  .ap-name { font-weight: 600; font-size: 13px; }
+  .ap-mac { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 20px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+  }
+  .badge.connected { background: rgba(62,207,142,0.12); color: var(--green); }
+  .badge.disconnected { background: rgba(242,69,61,0.12); color: var(--red); }
+  .badge.dot { width: 6px; height: 6px; border-radius: 50%; padding: 0; }
+  .client-count {
+    font-family: var(--font-mono); font-size: 15px; font-weight: 500;
+    min-width: 24px; display: inline-block; text-align: right;
+  }
+  .client-bar-wrap {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .bar-track {
+    flex: 1; height: 5px; background: var(--bg);
+    border-radius: 99px; overflow: hidden; min-width: 60px;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--accent), var(--cyan));
+    transition: width 0.6s ease;
+  }
+  .site-pill {
+    font-size: 11px; font-family: var(--font-mono);
+    color: var(--muted); background: var(--surface2);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 2px 8px;
+  }
+  .model-text { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+  .ip-text { font-size: 11px; font-family: var(--font-mono); color: var(--muted); }
+
+  /* EMPTY / ERROR / LOADING states */
+  .state-block {
+    padding: 60px 24px; text-align: center; color: var(--muted);
+  }
+  .state-block .icon { font-size: 32px; margin-bottom: 12px; }
+  .state-block h3 { font-size: 15px; color: var(--text); margin-bottom: 6px; }
+  .state-block p { font-size: 13px; line-height: 1.6; max-width: 360px; margin: 0 auto; }
+  .spinner {
+    width: 28px; height: 28px; border: 2px solid var(--border2);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.7s linear infinite; margin: 0 auto 14px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* FOOTER */
+  .footer-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 18px; font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+    flex-wrap: wrap; gap: 8px;
+  }
+  #back-btn {
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); font-family: var(--font-mono); font-size: 11px;
+    padding: 5px 12px; border-radius: 6px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  #back-btn:hover { color: var(--text); border-color: var(--border2); }
+
+  /* responsive */
+  @media (max-width: 720px) {
+    main { padding: 20px 16px; }
+    header { padding: 16px; }
+    .hide-mobile { display: none; }
+    .stats-row { grid-template-columns: repeat(2,1fr); }
+  }
+
+  /* ─── LOGIN OVERLAY ──────────────────────────────────────── */
+  #login-overlay {
+    position: fixed; inset: 0; z-index: 999;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 24px;
+    animation: fadeIn 0.4s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  #login-overlay.out {
+    animation: fadeOut 0.35s ease forwards;
+  }
+  @keyframes fadeOut { to { opacity: 0; transform: translateY(-8px); } }
+
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 36px 40px;
+    width: 100%; max-width: 400px;
+  }
+  .login-logo {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 28px;
+  }
+  .login-logo-mark {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-size: 16px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .login-logo-text h2 { font-size: 17px; font-weight: 600; line-height: 1.2; }
+  .login-logo-text p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .login-divider {
+    height: 1px; background: var(--border);
+    margin-bottom: 24px;
+  }
+  .login-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .login-field label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+    color: var(--muted); text-transform: uppercase;
+  }
+  .input-wrap { position: relative; }
+  .input-wrap input {
+    width: 100%;
+    background: var(--bg); border: 1px solid var(--border2);
+    color: var(--text); font-family: var(--font-mono); font-size: 13px;
+    padding: 11px 14px; border-radius: 9px; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .input-wrap input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79,156,249,0.12);
+  }
+  .input-wrap input.shake {
+    animation: shake 0.4s ease;
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(242,69,61,0.12);
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+  .toggle-pw {
+    position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer;
+    color: var(--muted); font-size: 13px; padding: 2px 4px;
+    transition: color 0.2s;
+  }
+  .toggle-pw:hover { color: var(--text); }
+
+  #login-error {
+    font-size: 12px; color: var(--red);
+    font-family: var(--font-mono); margin-bottom: 14px;
+    min-height: 18px; transition: opacity 0.2s;
+  }
+  .login-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff; border: none; font-family: var(--font-head);
+    font-size: 14px; font-weight: 600; padding: 13px 24px;
+    border-radius: 10px; cursor: pointer; width: 100%;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 4px;
+  }
+  .login-btn:hover { opacity: 0.9; }
+  .login-btn:active { transform: scale(0.98); }
+  .login-hint {
+    text-align: center; margin-top: 18px;
+    font-size: 11px; font-family: var(--font-mono); color: var(--muted);
+    line-height: 1.6;
+  }
+  .logout-btn {
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); font-family: var(--font-mono); font-size: 11px;
+    padding: 5px 12px; border-radius: 6px; cursor: pointer;
+    transition: all 0.2s; margin-left: 8px;
+  }
+  .logout-btn:hover { color: var(--red); border-color: rgba(242,69,61,0.4); }
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN OVERLAY ─────────────────────────────────────────── -->
+<div id="login-overlay">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-mark">M</div>
+      <div class="login-logo-text">
+        <h2>Mist AP Monitor</h2>
+        <p>Sign in to continue</p>
+      </div>
+    </div>
+    <div class="login-divider"></div>
+
+    <div class="login-field">
+      <label>Username</label>
+      <div class="input-wrap">
+        <input type="text" id="login-user" placeholder="Enter username" autocomplete="username"
+          onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()">
+      </div>
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <div class="input-wrap">
+        <input type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password"
+          onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="toggle-pw" type="button" onclick="togglePw(this)" title="Show/hide password">&#128065;</button>
+      </div>
+    </div>
+
+    <div id="login-error"></div>
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+
+    <div class="login-hint">
+      Default: <strong style="color:var(--text)">admin</strong> / <strong style="color:var(--text)">mist2024</strong>
+      &nbsp;&mdash;&nbsp;edit the <code style="color:var(--accent)">USERS</code> object in the script to change.
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">M</div>
+    <h1>Mist <span>AP Monitor</span></h1>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div id="status-pill">
+      <span class="dot"></span>
+      <span id="status-text">Not connected</span>
+    </div>
+    <button class="logout-btn" id="logout-btn" style="display:none" onclick="doLogout()">Sign out</button>
+  </div>
+</header>
+
+<main>
+  <!-- ── CONFIGURATION ─────────────────────────────────────── -->
+  <div id="config-panel">
+    <h2>Connect to your tenant</h2>
+    <p>Enter your Juniper Mist API credentials. Your token is used only in-browser and never stored or transmitted anywhere except directly to the Mist API.</p>
+
+    <div class="field-group">
+      <div class="field">
+        <label>API Token</label>
+        <input type="password" id="api-token" placeholder="Paste your Mist API token…" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Cloud Region</label>
+        <select id="cloud-region">
+          <option value="https://api.mist.com">Global (api.mist.com)</option>
+          <option value="https://api.eu.mist.com">Europe (api.eu.mist.com)</option>
+          <option value="https://api.gc1.mist.com">GovCloud (api.gc1.mist.com)</option>
+          <option value="https://api.ac2.mist.com">APAC (api.ac2.mist.com)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Org ID <span style="text-transform:none;font-weight:400;color:var(--muted)"> — leave blank to auto-detect</span></label>
+        <input type="text" id="org-id" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" autocomplete="off">
+      </div>
+    </div>
+
+    <button class="btn-primary" id="connect-btn" onclick="connect()">Connect &amp; Load APs</button>
+
+    <div id="conn-error" style="display:none;margin-top:14px;font-size:12px;color:var(--red);font-family:var(--font-mono);line-height:1.6;"></div>
+  </div>
+
+  <!-- ── DASHBOARD ─────────────────────────────────────────── -->
+  <div id="dashboard">
+    <div class="stats-row">
+      <div class="stat-card blue">
+        <div class="stat-label">Total APs</div>
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-sub" id="stat-org">—</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-label">Connected APs</div>
+        <div class="stat-value" id="stat-connected">—</div>
+        <div class="stat-sub" id="stat-connected-pct">—</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-label">Total Clients</div>
+        <div class="stat-value" id="stat-clients">—</div>
+        <div class="stat-sub">across all APs</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-label">Busiest AP</div>
+        <div class="stat-value" id="stat-busiest-count">—</div>
+        <div class="stat-sub" id="stat-busiest-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px">—</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="search-input" placeholder="Filter APs by name, site, MAC…" oninput="applyFilters()">
+      </div>
+      <button class="sort-btn active" id="sort-clients" onclick="setSort('clients')">▼ Clients</button>
+      <button class="sort-btn" id="sort-name" onclick="setSort('name')">Name A-Z</button>
+      <button class="sort-btn" id="sort-status" onclick="setSort('status')">Status</button>
+      <button class="refresh-btn" onclick="refreshData()">↻ Refresh</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Access Point</th>
+            <th class="hide-mobile">Site</th>
+            <th class="hide-mobile">Model</th>
+            <th>Status</th>
+            <th>Clients</th>
+            <th class="hide-mobile">IP Address</th>
+          </tr>
+        </thead>
+        <tbody id="ap-tbody">
+          <tr><td colspan="6"><div class="state-block"><div class="spinner"></div><h3>Loading…</h3></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer-bar">
+      <button id="back-btn" onclick="goBack()">← Change credentials</button>
+      <span id="last-updated">—</span>
+    </div>
+  </div>
+</main>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────
+let state = {
+  token: '', baseUrl: '', orgId: '',
+  aps: [], sites: {},
+  sort: 'clients', filter: '',
+};
+
+// ── CONNECT ────────────────────────────────────────────────────
+async function connect() {
+  const token = document.getElementById('api-token').value.trim();
+  const baseUrl = document.getElementById('cloud-region').value;
+  const orgIdInput = document.getElementById('org-id').value.trim();
+  const errEl = document.getElementById('conn-error');
+  const btn = document.getElementById('connect-btn');
+
+  errEl.style.display = 'none';
+  if (!token) { showError('API token is required.'); return; }
+
+  btn.disabled = true; btn.textContent = 'Connecting…';
+  state.token = token; state.baseUrl = baseUrl;
+
+  try {
+    // Auto-detect org if not provided
+    let orgId = orgIdInput;
+    if (!orgId) {
+      const selfResp = await mistFetch('/api/v1/self');
+      if (!selfResp.ok) throw new Error(`Auth failed (${selfResp.status}). Check your API token.`);
+      const self = await selfResp.json();
+      const orgs = Object.keys(self.privileges?.reduce((a, p) => {
+        if (p.org_id) a[p.org_id] = true; return a;
+      }, {}) || {});
+      if (!orgs.length) throw new Error('No organizations found for this token.');
+      orgId = orgs[0];
+    }
+    state.orgId = orgId;
+
+    // Load sites for lookup
+    const sitesResp = await mistFetch(`/api/v1/orgs/${orgId}/sites`);
+    if (sitesResp.ok) {
+      const sites = await sitesResp.json();
+      state.sites = sites.reduce((a, s) => { a[s.id] = s.name; return a; }, {});
+    }
+
+    await loadAPs();
+    showDashboard();
+  } catch (e) {
+    showError(e.message || 'Connection failed. Check credentials and try again.');
+    btn.disabled = false; btn.textContent = 'Connect & Load APs';
+  }
+}
+
+async function loadAPs() {
+  const { orgId } = state;
+
+  // Fetch devices (APs) — paginate if needed
+  let allAPs = [];
+  let page = 1;
+  while (true) {
+    const resp = await mistFetch(`/api/v1/orgs/${orgId}/devices/search?type=ap&limit=200&page=${page}`);
+    if (!resp.ok) throw new Error(`Failed to load APs (${resp.status}).`);
+    const data = await resp.json();
+    const results = data.results || [];
+    allAPs = allAPs.concat(results);
+    if (results.length < 200) break;
+    page++;
+  }
+
+  // Fetch client counts for all sites
+  const clientMap = {};
+  try {
+    const statsResp = await mistFetch(`/api/v1/orgs/${orgId}/stats/devices?type=ap&limit=1000`);
+    if (statsResp.ok) {
+      const statsData = await statsResp.json();
+      const stats = statsData.results || statsData || [];
+      stats.forEach(s => {
+        if (s.mac) clientMap[s.mac] = s.num_clients || 0;
+      });
+    }
+  } catch (_) {}
+
+  state.aps = allAPs.map(ap => ({
+    id: ap.id || ap.device_id,
+    name: ap.name || ap.hostname || ap.mac,
+    mac: ap.mac,
+    model: ap.model || '—',
+    site_id: ap.site_id,
+    site_name: state.sites[ap.site_id] || ap.site_id || '—',
+    status: ap.status === 'connected' ? 'connected' : 'disconnected',
+    ip: ap.ip_address || ap.ip || '—',
+    clients: clientMap[ap.mac] || ap.num_clients || 0,
+  }));
+
+  updateStats();
+  renderTable();
+  setStatus('live', `Live · ${new Date().toLocaleTimeString()}`);
+  document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+}
+
+// ── API HELPER ─────────────────────────────────────────────────
+function mistFetch(path) {
+  return fetch(state.baseUrl + path, {
+    headers: { Authorization: `Token ${state.token}`, 'Content-Type': 'application/json' }
+  });
+}
+
+// ── STATS ──────────────────────────────────────────────────────
+function updateStats() {
+  const { aps, orgId } = state;
+  const connected = aps.filter(a => a.status === 'connected');
+  const totalClients = aps.reduce((s, a) => s + a.clients, 0);
+  const busiest = [...aps].sort((a,b) => b.clients - a.clients)[0];
+
+  document.getElementById('stat-total').textContent = aps.length;
+  document.getElementById('stat-org').textContent = orgId.slice(0,8) + '…';
+  document.getElementById('stat-connected').textContent = connected.length;
+  document.getElementById('stat-connected-pct').textContent =
+    aps.length ? Math.round(connected.length / aps.length * 100) + '% online' : '—';
+  document.getElementById('stat-clients').textContent = totalClients;
+  if (busiest) {
+    document.getElementById('stat-busiest-count').textContent = busiest.clients;
+    document.getElementById('stat-busiest-name').textContent = busiest.name;
+  }
+}
+
+// ── RENDER TABLE ───────────────────────────────────────────────
+function renderTable() {
+  const { aps, sort, filter } = state;
+  const tbody = document.getElementById('ap-tbody');
+
+  let list = [...aps];
+
+  // filter
+  if (filter) {
+    const q = filter.toLowerCase();
+    list = list.filter(a =>
+      a.name.toLowerCase().includes(q) ||
+      a.mac.toLowerCase().includes(q) ||
+      a.site_name.toLowerCase().includes(q) ||
+      a.model.toLowerCase().includes(q)
+    );
+  }
+
+  // sort
+  if (sort === 'clients') list.sort((a,b) => b.clients - a.clients);
+  else if (sort === 'name') list.sort((a,b) => a.name.localeCompare(b.name));
+  else if (sort === 'status') list.sort((a,b) => (a.status === 'connected' ? -1 : 1));
+
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="state-block">
+      <div class="icon">⊘</div>
+      <h3>No APs found</h3>
+      <p>${filter ? 'No results match your filter.' : 'No access points returned from the API.'}</p>
+    </div></td></tr>`;
+    return;
+  }
+
+  const maxClients = Math.max(...list.map(a => a.clients), 1);
+
+  tbody.innerHTML = list.map(ap => {
+    const pct = Math.round((ap.clients / maxClients) * 100);
+    const clientColor = ap.clients === 0 ? 'var(--muted)' :
+                        ap.clients < 10 ? 'var(--accent)' :
+                        ap.clients < 25 ? 'var(--amber)' : 'var(--red)';
+    return `
+    <tr>
+      <td>
+        <div class="ap-name">${esc(ap.name)}</div>
+        <div class="ap-mac">${esc(ap.mac)}</div>
+      </td>
+      <td class="hide-mobile"><span class="site-pill">${esc(ap.site_name)}</span></td>
+      <td class="hide-mobile"><span class="model-text">${esc(ap.model)}</span></td>
+      <td>
+        <span class="badge ${ap.status}">
+          <span class="dot" style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block"></span>
+          ${ap.status}
+        </span>
+      </td>
+      <td>
+        <div class="client-bar-wrap">
+          <span class="client-count" style="color:${clientColor}">${ap.clients}</span>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${pct}%"></div>
+          </div>
+        </div>
+      </td>
+      <td class="hide-mobile"><span class="ip-text">${esc(ap.ip)}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── CONTROLS ───────────────────────────────────────────────────
+function setSort(key) {
+  state.sort = key;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`sort-${key}`).classList.add('active');
+  renderTable();
+}
+
+function applyFilters() {
+  state.filter = document.getElementById('search-input').value;
+  renderTable();
+}
+
+async function refreshData() {
+  setStatus('live', 'Refreshing…');
+  try { await loadAPs(); }
+  catch (e) { setStatus('error', 'Refresh failed'); }
+}
+
+// ── UI HELPERS ─────────────────────────────────────────────────
+function showDashboard() {
+  document.getElementById('config-panel').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+}
+
+function goBack() {
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('config-panel').style.display = 'block';
+  document.getElementById('connect-btn').disabled = false;
+  document.getElementById('connect-btn').textContent = 'Connect & Load APs';
+  setStatus('', 'Not connected');
+}
+
+function showError(msg) {
+  const el = document.getElementById('conn-error');
+  el.textContent = '⚠ ' + msg;
+  el.style.display = 'block';
+}
+
+function setStatus(type, text) {
+  const pill = document.getElementById('status-pill');
+  const dot = pill.querySelector('.dot');
+  pill.className = 'status-pill ' + type;
+  document.getElementById('status-text').textContent = text;
+  dot.className = 'dot' + (type === 'live' ? ' pulse' : '');
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── LOGIN ──────────────────────────────────────────────────────
+// To add/change users: edit the USERS object below.
+// Keys are usernames, values are SHA-256 hashes of passwords.
+// Generate a hash at: https://emn178.github.io/online-tools/sha256.html
+// Default: admin / mist2024
+const USERS = {
+  "admin": "b1c978caec9c6cc91dfdf66e94887cb63e24d74a898cd44413a76ee35945e4f",
+  // "viewer": "your-sha256-hash-here",
+};
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function doLogin() {
+  const user = document.getElementById('login-user').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-error');
+  errEl.textContent = '';
+
+  if (!user || !pass) {
+    setLoginError('Please enter both username and password.');
+    return;
+  }
+
+  const hash = await sha256(pass);
+  if (USERS[user] && USERS[user] === hash) {
+    sessionStorage.setItem('mist_auth', '1');
+    const overlay = document.getElementById('login-overlay');
+    overlay.classList.add('out');
+    setTimeout(() => { overlay.style.display = 'none'; }, 350);
+    document.getElementById('logout-btn').style.display = 'inline-block';
+  } else {
+    setLoginError('Invalid username or password.');
+    ['login-user','login-pass'].forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.add('shake');
+      el.addEventListener('animationend', () => el.classList.remove('shake'), { once: true });
+    });
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem('mist_auth');
+  // Reset app state
+  state = { token: '', baseUrl: '', orgId: '', aps: [], sites: {}, sort: 'clients', filter: '' };
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('config-panel').style.display = 'block';
+  document.getElementById('connect-btn').disabled = false;
+  document.getElementById('connect-btn').textContent = 'Connect & Load APs';
+  document.getElementById('logout-btn').style.display = 'none';
+  setStatus('', 'Not connected');
+  // Show login
+  const overlay = document.getElementById('login-overlay');
+  overlay.style.display = 'flex';
+  overlay.classList.remove('out');
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-error').textContent = '';
+}
+
+function setLoginError(msg) {
+  document.getElementById('login-error').textContent = '⚠ ' + msg;
+}
+
+function togglePw(btn) {
+  const inp = btn.previousElementSibling;
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+// Auto-hide overlay if already authenticated in this session
+if (sessionStorage.getItem('mist_auth') === '1') {
+  document.getElementById('login-overlay').style.display = 'none';
+  document.getElementById('logout-btn').style.display = 'inline-block';
+}
+// Focus username field on load
+window.addEventListener('load', () => {
+  const overlay = document.getElementById('login-overlay');
+  if (overlay.style.display !== 'none') {
+    document.getElementById('login-user').focus();
+  }
+});
+</script>
+</body>
+</html>
